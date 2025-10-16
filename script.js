@@ -2,8 +2,9 @@
 // CONFIGURACIÓN Y VARIABLES GLOBALES
 // ==========================================
 const STORAGE_KEY = 'miPeliculaMentalRespuestas';
+let generationInterval; // Variable para el intervalo de texto de carga
 
-// ⭐ Banco de preguntas (sin cambios)
+// Banco de preguntas
 const questions = [
     {
         id: 1, category: "🎓 MI FUTURO",
@@ -95,9 +96,7 @@ function playMusic(choice) {
     let url = '';
 
     if (choice === 'recommended') {
-        // 👇 CAMBIO REALIZADO AQUÍ 👇
-        // Se cambió el enlace web por la ruta a tu archivo local.
-        url = 'assets/recommended.mp3'; 
+        url = 'assets/recommended.mp3';
     } else if (choice === 'custom') {
         const fileInput = document.getElementById('audioFileUpload');
         const file = fileInput.files[0];
@@ -120,7 +119,7 @@ function playMusic(choice) {
         musicToggle.classList.remove('hidden');
         document.getElementById('musicIcon').textContent = '🔊';
     }
-    
+
     startQuestionnaire();
 }
 
@@ -128,14 +127,14 @@ function initializeAudio() {
     const audio = document.getElementById('bgMusic');
     const toggleBtn = document.getElementById('musicToggle');
     const icon = document.getElementById('musicIcon');
-    
+
     toggleBtn.addEventListener('click', () => {
-        if (audio.paused) { 
-            audio.play(); 
-            icon.textContent = '🔊'; 
-        } else { 
-            audio.pause(); 
-            icon.textContent = '🔇'; 
+        if (audio.paused) {
+            audio.play();
+            icon.textContent = '🔊';
+        } else {
+            audio.pause();
+            icon.textContent = '🔇';
         }
     });
 }
@@ -145,13 +144,23 @@ function initializeAudio() {
 // ==========================================
 function changeMusic() {
     const audio = document.getElementById('bgMusic');
-    audio.pause(); 
-    showScreen('musicSelectionScreen'); 
+    audio.pause();
+    showScreen('musicSelectionScreen');
 }
 
 function showScreen(screenId) {
-    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
+    const activeScreen = document.querySelector('.screen.active');
+    const newScreen = document.getElementById(screenId);
+
+    if (activeScreen) {
+        activeScreen.classList.add('hiding');
+        activeScreen.addEventListener('animationend', () => {
+            activeScreen.classList.remove('active', 'hiding');
+            newScreen.classList.add('active');
+        }, { once: true });
+    } else {
+        newScreen.classList.add('active');
+    }
 }
 
 function startQuestionnaire() {
@@ -194,11 +203,15 @@ function updateButtons() {
 }
 
 function nextQuestion() {
-    const answer = document.getElementById('answerInput').value.trim();
+    const answerInput = document.getElementById('answerInput');
+    const answer = answerInput.value.trim();
+
     if (answer.length < 10) {
-        alert('Por favor, escribe una respuesta más detallada (al menos 10 caracteres).');
+        answerInput.classList.add('error');
+        setTimeout(() => answerInput.classList.remove('error'), 820);
         return;
     }
+
     const currentImageUrl = document.getElementById('questionImage').src;
     userAnswers[currentQuestionIndex] = { answer: answer, imageUrl: currentImageUrl };
     saveAnswersToStorage();
@@ -222,7 +235,25 @@ function previousQuestion() {
 // ==========================================
 async function generateMovie() {
     showScreen('generationScreen');
-    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    const statuses = [
+        "Analizando tus fortalezas...",
+        "Identificando tus obstáculos...",
+        "Construyendo tu plan de acción...",
+        "Pulido final de las escenas..."
+    ];
+    let statusIndex = 0;
+    const statusElement = document.getElementById('generationStatus');
+    statusElement.textContent = statuses[statusIndex];
+
+    generationInterval = setInterval(() => {
+        statusIndex = (statusIndex + 1) % statuses.length;
+        statusElement.textContent = statuses[statusIndex];
+    }, 1500);
+
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    clearInterval(generationInterval);
     createMovieScenes();
     showScreen('resultScreen');
 }
@@ -233,6 +264,7 @@ function createMovieScenes() {
     const scenes = generateScenesFromAnswers();
     scenes.forEach((scene, i) => {
         const sceneCard = createSceneCard(scene, i + 1);
+        sceneCard.style.animationDelay = `${i * 0.2}s`;
         timeline.appendChild(sceneCard);
     });
 }
@@ -286,7 +318,7 @@ async function downloadPDF() {
     const timeline = document.getElementById('movieTimeline');
     try {
         const canvas = await html2canvas(timeline, {
-            backgroundColor: '#0f0f0f', scale: 2, useCORS: true
+            backgroundColor: '#0a0a0a', scale: 2, useCORS: true
         });
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
