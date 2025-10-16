@@ -4,114 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Película Mental - Proyecto de Vida</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <audio id="bgMusic" loop></audio>
+<audio id="bgMusic" loop></audio>
 
-    <button id="musicToggle" class="music-control hidden" aria-label="Pausar/Reproducir música">
-        <span id="musicIcon">🔊</span>
-    </button>
+<button id="musicToggle" class="music-control hidden" aria-label="Pausar/Reproducir música">
+    <span id="musicIcon">🔊</span>
+</button>
 
-    <div class="container">
-        <header class="hero">
-            <h1 class="title-cinema">MI PELÍCULA MENTAL</h1>
-            <p class="subtitle">Descubre tu proyecto de vida a través de preguntas poderosas</p>
-        </header>
+<div class="container">
+    <header class="hero">
+        <h1 class="title-cinema">MI PELÍCULA MENTAL</h1>
+        <p class="subtitle">Descubre tu proyecto de vida a través de preguntas poderosas</p>
+    </header>
 
-        <section id="musicSelectionScreen" class="screen active">
-            <div class="welcome-card">
-                <div class="cinema-icon">🎶</div>
-                <h2>Elige tu Banda Sonora</h2>
-                <p>La música de fondo te ayudará a concentrarte y reflexionar. ¿Qué prefieres?</p>
-                <div class="music-options">
-                    <button class="btn-primary" onclick="playMusic('recommended')">Usar Música Recomendada (Mística)</button>
-                    <div class="or-divider">o</div>
-                    <div class="custom-music-wrapper">
-                        <input type="file" id="audioFileUpload" class="hidden" accept="audio/*" onchange="playMusic('custom')">
-                        <button class="btn-secondary" onclick="document.getElementById('audioFileUpload').click()">
-                            Subir mi Música 📁
-                        </button>
-                    </div>
-                     <button class="btn-secondary no-music" onclick="playMusic('none')">Continuar sin Música</button>
+    <section id="musicSelectionScreen" class="screen">
+        <div class="welcome-card">
+            <div class="cinema-icon">✨</div>
+            <h2>Elige tu Banda Sonora</h2>
+            <p>La música de fondo te ayudará a concentrarte y reflexionar. ¿Qué prefieres?</p>
+            <div class="music-options">
+                <button class="btn-primary" onclick="playMusic('recommended')">Usar Música Recomendada (Mística)</button>
+                <div class="or-divider">o</div>
+                <div class="custom-music-wrapper">
+                    <input type="file" id="audioFileUpload" class="hidden" accept="audio/*" onchange="playMusic('custom')">
+                    <button class="btn-secondary" onclick="document.getElementById('audioFileUpload').click()">
+                        Subir mi Música 📁
+                    </button>
                 </div>
+                <button class="btn-secondary no-music" onclick="playMusic('none')">Continuar sin Música</button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="questionnaireScreen" class="screen">
-            <div class="questionnaire-card">
-                <div class="question-header">
-                     <img id="questionImage" src="" alt="Imagen de la pregunta" class="question-image">
-                    <span class="question-category" id="questionCategory">CATEGORÍA</span>
-                    <h2 class="question-title" id="questionTitle">Pregunta aquí</h2>
-                </div>
-                
-                <div class="question-body">
-                    <textarea 
-                        id="answerInput" 
-                        rows="6" 
-                        placeholder="Escribe tu respuesta aquí..."
-                        class="answer-textarea"
+    <section id="questionnaireScreen" class="screen">
+        <div class="questionnaire-card">
+            <div class="question-header">
+                <img id="questionImage" src="" alt="Imagen de la pregunta" class="question-image">
+                <span class="question-category" id="questionCategory">CATEGORÍA</span>
+                <h2 class="question-title" id="questionTitle">Pregunta aquí</h2>
+            </div>
+
+            <div class="question-body">
+                    <textarea
+                            id="answerInput"
+                            rows="6"
+                            placeholder="Escribe tu respuesta aquí..."
+                            class="answer-textarea"
                     ></textarea>
-                    
-                    <div class="helper-text" id="helperText">
-                        Tómate tu tiempo. Sé honesto y específico.
-                    </div>
+
+                <div class="helper-text" id="helperText">
+                    Tómate tu tiempo. Sé honesto y específico.
                 </div>
-                
-                <div class="question-actions">
-                    <button class="btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
-                        ← Anterior
-                    </button>
-                    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">
-                        Siguiente →
-                    </button>
-                </div>
-            </div>
-            
-            <div class="extra-actions">
-                <button class="btn-tertiary" onclick="changeMusic()">Cambiar Música 🎶</button>
             </div>
 
-             <div id="progressBar" class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <p class="progress-text"><span id="currentStep">1</span> de <span id="totalSteps">8</span></p>
+            <div class="question-actions">
+                <button class="btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>
+                    ← Anterior
+                </button>
+                <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">
+                    Siguiente →
+                </button>
             </div>
-        </section>
+        </div>
 
-        <section id="generationScreen" class="screen">
-            <div class="generation-card">
-                <div class="cinema-icon animate-pulse">🎬</div>
-                <h2>Creando tu Película Mental...</h2>
-                <p class="generation-text">Estamos procesando tus respuestas y generando las escenas de tu vida.</p>
-                <div class="loader-cinema"></div>
-                <p class="generation-status" id="generationStatus">Analizando tus fortalezas...</p>
+        <div class="extra-actions">
+            <button class="btn-tertiary" onclick="changeMusic()">Cambiar Música 🎶</button>
+        </div>
+
+        <div id="progressBar" class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
-        </section>
+            <p class="progress-text"><span id="currentStep">1</span> de <span id="totalSteps">8</span></p>
+        </div>
+    </section>
 
-        <section id="resultScreen" class="screen">
-            <div class="result-header">
-                <h2 class="section-title">🎞️ Tu Película de Vida</h2>
-                <div class="result-actions">
-                    <button class="btn-secondary" onclick="restartJourney()">Crear Nueva Película</button>
-                    <button class="btn-primary" onclick="downloadPDF()">Descargar PDF 📥</button>
-                </div>
+    <section id="generationScreen" class="screen">
+        <div class="generation-card">
+            <div class="cinema-icon animate-pulse">📽️</div>
+            <h2>Creando tu Película Mental...</h2>
+            <p class="generation-text">Estamos procesando tus respuestas y generando las escenas de tu vida.</p>
+            <div class="loader-cinema"></div>
+            <p class="generation-status" id="generationStatus" aria-live="polite">Analizando tus fortalezas...</p>
+        </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+        <div class="result-header">
+            <h2 class="section-title">🎞️ Tu Película de Vida</h2>
+            <div class="result-actions">
+                <button class="btn-secondary" onclick="restartJourney()">Crear Nueva Película</button>
+                <button class="btn-primary" onclick="downloadPDF()">Descargar PDF 📥</button>
             </div>
-            
-            <div id="movieTimeline" class="timeline">
-                </div>
-        </section>
-    </div>
+        </div>
 
-    <script src="script.js"></script>
+        <div id="movieTimeline" class="timeline">
+        </div>
+    </section>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
